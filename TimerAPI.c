@@ -153,7 +153,10 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
 	}
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+	fprintf(stdout, "maybe?\n");
+
 	insert_hash_entry(ptmr);
+	fprintf(stdout, "yes?\n");
 
 	return *perr;
 }
@@ -228,6 +231,7 @@ void insert_hash_entry(RTOS_TMR *timer_obj)
 
 	// Unlock the Resources
 	pthread_mutex_unlock(&hash_table_mutex);
+	fprintf(stdout, "no?\n");
 
 }
 
@@ -266,7 +270,7 @@ void *RTOSTmrTask(void *temp)
 
 		// Once got the signal, Increment the Timer Tick Counter
 		RTOSTmrTickCtr += 1;
-		fprintf(stdout, RTOSTmrTickCtr);
+		fprintf(stdout, "justworkplz\n");
 		// Check the whole List associated with the index of the Hash Table
 		int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
 
