@@ -52,19 +52,25 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 		*err = RTOS_ERR_TMR_INVALID_DLY;
 		return NULL;
 	}
+	fprintf(stdout, "check4\n");
+
 	if (option == RTOS_TMR_PERIODIC && period < 1){
 		*err = RTOS_ERR_TMR_INVALID_PERIOD;
 		return NULL;
 	}
+	fprintf(stdout, "check5\n");
+
 	if (option != RTOS_TMR_PERIODIC && option != RTOS_TMR_ONE_SHOT){
 		*err = RTOS_ERR_TMR_INVALID_OPT;
 		return NULL;
 	}
+	fprintf(stdout, "check6\n");
+
 	if (callback == NULL){
 		*err = RTOS_ERR_TMR_NO_CALLBACK;
 		return NULL;
 	}
-	fprintf(stdout, "check2");
+	fprintf(stdout, "check7");
 
 	// Allocate a New Timer Obj
 	timer_obj = alloc_timer_obj();
