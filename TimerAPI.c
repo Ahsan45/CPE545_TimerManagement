@@ -42,8 +42,11 @@ pthread_mutex_t timer_pool_mutex;
 // Function to create a Timer
 RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALLBACK callback, void *callback_arg, INT8	*name, INT8U *err)
 {
+	fprintf(stdout, "check2\n");
+
 	RTOS_TMR *timer_obj = NULL;
-	
+	fprintf(stdout, "check3\n");
+
 	// Check the input Arguments for ERROR
 	if (delay < 1){
 		*err = RTOS_ERR_TMR_INVALID_DLY;
