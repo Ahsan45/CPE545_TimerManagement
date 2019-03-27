@@ -61,6 +61,8 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 		*err = RTOS_ERR_TMR_NO_CALLBACK;
 		return NULL;
 	}
+	fprintf(stdout, "check2");
+
 	// Allocate a New Timer Obj
 	timer_obj = alloc_timer_obj();
 
@@ -255,7 +257,7 @@ void *RTOSTmrTask(void *temp)
 
 		// Once got the signal, Increment the Timer Tick Counter
 		RTOSTmrTickCtr += 1;
-		fprintf(stdout, RTOSTmrTickCtr);
+
 		// Check the whole List associated with the index of the Hash Table
 		int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
 
@@ -331,6 +333,7 @@ void RTOSTmrInit(void)
 	else{
 		fprintf(stdout,"\nRTOS Initialization Done...\n");
 	}
+
 }
 
 // Allocate a timer object from free timer pool
@@ -343,8 +346,7 @@ RTOS_TMR* alloc_timer_obj(void)
 	if (FreeTmrCount > 0){
 		FreeTmrCount -= 1;
 		// Assign the Timer Object
-		(FreeTmrListPtr)->RTOSTmrType = RTOS_TMR_TYPE;
-		fprintf(stdout, "check1");
+		(FreeTmrListPtr + FreeTmrCount)->RTOSTmrType = RTOS_TMR_TYPE;
 	}
 	// Unlock the Resources
 	pthread_mutex_unlock(&timer_pool_mutex);
