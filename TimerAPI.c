@@ -71,7 +71,7 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 		
 	fprintf(stdout, "check7\n");
 
-	if(timer_obj == NULL) {
+	if(*timer_obj == NULL) {
 		// Timers are not available
 		*err = RTOS_MALLOC_ERR;
 		return NULL;
