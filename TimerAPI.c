@@ -71,7 +71,7 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 		
 	fprintf(stdout, "check7\n");
 
-	if(*timer_obj == NULL) {
+	if(timer_obj == NULL) {
 		// Timers are not available
 		*err = RTOS_MALLOC_ERR;
 		return NULL;
@@ -355,11 +355,13 @@ RTOS_TMR* alloc_timer_obj(void)
 	if (FreeTmrCount > 0){
 		FreeTmrCount -= 1;
 		// Assign the Timer Object
-		(FreeTmrListPtr + FreeTmrCount)->RTOSTmrType = RTOS_TMR_TYPE;
+		RTOS_TMR *temp = (FreeTmrListPtr + FreeTmrCount);
+		temp->RTOSTmrType = RTOS_TMR_TYPE;
 	}
 	// Unlock the Resources
 	pthread_mutex_unlock(&timer_pool_mutex);
 
+	return temp;
 }
 
 // Free the allocated timer object and put it back into free pool
