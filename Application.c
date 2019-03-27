@@ -89,7 +89,7 @@ int main(void)
 	// Provide the required arguments in the function call
 	fprintf(stdout, "\ncheckplz\n");
 	timer_obj1 = RTOSTmrCreate(5, 5, RTOS_TMR_PERIODIC, &function1, NULL, timer_name[0], &err_val);
-	fprintf(stdout, "checkidfk");
+	fprintf(stdout, "checkidfk\n");
 
 	// Check the return value and determine if it created successfully or not
 	
@@ -107,11 +107,11 @@ int main(void)
 	// Starting Timer
 	// ================================================================
 	// Start Timer1
-	fprintf(stdout, "check im really good");
+	fprintf(stdout, "check im really good\n");
 
 	RTOSTmrStart(timer_obj1, &err_val);
 	// Check the return value and determine if it started successfully or not
-	fprintf(stdout, "check im really good");
+	fprintf(stdout, "check im really good\n");
 
 	// Start Timer2
 	// RTOSTmrStart(timer_obj2, &err_val);
