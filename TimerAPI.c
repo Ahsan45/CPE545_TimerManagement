@@ -42,22 +42,45 @@ pthread_mutex_t timer_pool_mutex;
 // Function to create a Timer
 RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALLBACK callback, void *callback_arg, INT8	*name, INT8U *err)
 {
-	RTOS_TMR *timer_obj = (RTOS_TMR*)malloc(sizeof(RTOS_TMR));
+	RTOS_TMR *timer_obj = NULL;
 	
 	// Check the input Arguments for ERROR
-	timer_obj->RTOSTmrType = RTOS_TMR_TYPE;
-	
+	if (delay < 1){
+		*err = RTOS_ERR_TMR_INVALID_DLY;
+		return NULL;
+	}
+	if (option == RTOS_TMR_PERIODIC && period < 1){
+		*err = RTOS_ERR_TMR_INVALID_PERIOD;
+		return NULL;
+	}
+	if (option != RTOS_TMR_PERIODIC && option != RTOS_TMR_ONE_SHOT){
+		*err = RTOS_ERR_TMR_INVALID_OPT;
+		return NULL;
+	}
+	if (callback == NULL){
+		*err = RTOS_ERR_TMR_NO_CALLBACK;
+		return NULL;
+	}
 	// Allocate a New Timer Obj
 	timer_obj = alloc_timer_obj();
 
 	if(timer_obj == NULL) {
 		// Timers are not available
-		*err = RTOS_ERR_TMR_NON_AVAIL;
+		*err = RTOS_MALLOC_ERR;
 		return NULL;
 	}
 
 	// Fill up the Timer Object
-
+	timer_obj->RTOSTmrCallback = callback;
+	timer_obj->RTOSTmrCallbackArg = callback_arg;
+	timer_obj->RTOSTmrNext = NULL;
+	timer_obj->RTOSTmrPrev = NULL;
+	timer_obj->RTOSTmrMatch = delay + RTOSTmrTickCtr;
+	timer_obj->RTOSTmrDelay = delay;
+	timer_obj->RTOSTmrPeriod = period;
+	timer_obj->RTOSTmrName = name;
+	timer_obj->RTOSTmrOpt = option;
+	timer_obj->RTOSTmrState = RTOS_TMR_STATE_STOPPED;
 
 	*err = RTOS_SUCCESS;
 
@@ -105,10 +128,23 @@ INT8U RTOSTmrStateGet(RTOS_TMR *ptmr, INT8U *perr)
 INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 {
 	// ERROR Checking
-
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return perr;
+	}
 	// Based on the Timer State, update the RTOSTmrMatch using RTOSTmrTickCtr, RTOSTmrDelay and RTOSTmrPeriod
 	// You may use the Hash Table to Insert the Running Timer Obj
+	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_STOPPED){
+		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
+	}
+	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_COMPLETED && ptmr->RTOSTmrOpt == RTOS_TMR_PERIODIC){
+		ptmr->RTOSTmrDelay = ptmr->RTOSTmrPeriod;
+		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
+	}
+	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+	insert_hash_entry(ptmr);
 
+	return perr;
 }
 
 // Function to Stop the Timer
@@ -131,6 +167,8 @@ void RTOSTmrSignal(void)
 {
 	// Received the OS Tick
 	// Send the Signal to Timer Task using the Semaphore
+	sem_post(&timer_task_sem);
+
 }
 
 /*****************************************************
@@ -144,6 +182,7 @@ INT8U Create_Timer_Pool(INT32U timer_count)
 	// Create the Timer pool using Dynamic Memory Allocation
 	// You can imagine of LinkedList Creation for Timer Obj
 	FreeTmrListPtr = (RTOS_TMR*)malloc(timer_count * sizeof(RTOS_TMR*));
+	FreeTmrCount = timer_count;
 	return RTOS_SUCCESS;
 }
 
@@ -160,24 +199,50 @@ void init_hash_table(void)
 void insert_hash_entry(RTOS_TMR *timer_obj)
 {
 	// Calculate the index using Hash Function
-	
+	int index = (timer_obj->RTOSTmrDelay + RTOSTmrTickCtr) % HASH_TABLE_SIZE;
+
 	// Lock the Resources
+	pthread_mutex_lock(&hash_table_mutex);
 
 	// Add the Entry
+	if (hash_table[index].list_ptr == NULL){
+		hash_table[index].list_ptr = timer_obj;
+	}
+	else{
+		RTOS_TMR *temp = hash_table[index].list_ptr;
+		timer_obj->RTOSTmrNext = temp;
+		temp->RTOSTmrPrev = timer_obj;
+		hash_table[index].list_ptr = timer_obj;
+	}
 
 	// Unlock the Resources
+	pthread_mutex_unlock(&hash_table_mutex);
+
 }
 
 // Remove the Timer Object entry from the Hash Table
 void remove_hash_entry(RTOS_TMR *timer_obj)
 {
 	// Calculate the index using Hash Function
+	int index = (timer_obj->RTOSTmrDelay + RTOSTmrTickCtr) % HASH_TABLE_SIZE;
 
 	// Lock the Resources
+	pthread_mutex_lock(&hash_table_mutex);
 
 	// Remove the Timer Obj
+	if (timer_obj->RTOSTmrPrev == NULL){
+		hash_table[index].list_ptr = timer_obj->RTOSTmrNext;
+		timer_obj->RTOSTmrNext == NULL;
+	}
+	else{
+		timer_obj->RTOSTmrPrev->RTOSTmrNext = timer_obj->RTOSTmrNext;
+		timer_obj->RTOSTmrNext == NULL;
+		timer_obj->RTOSTmrPrev == NULL;
+	}
 
 	// Unlock the Resources
+	pthread_mutex_unlock(&hash_table_mutex);
+
 }
 
 // Timer Task to Manage the Running Timers
@@ -186,15 +251,32 @@ void *RTOSTmrTask(void *temp)
 
 	while(1) {
 		// Wait for the signal from RTOSTmrSignal()
+		sem_wait(&timer_task_sem);
 
 		// Once got the signal, Increment the Timer Tick Counter
+		RTOSTmrTickCtr += 1;
 
 		// Check the whole List associated with the index of the Hash Table
-		
+		int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
+
 		// Compare each obj of linked list for Timer Completion
 		// If the Timer is completed, Call its Callback Function, Remove the entry from Hash table
 		// If the Timer is Periodic then again insert it in the hash table
 		// Change the State
+		if (hash_table[index].list_ptr != NULL){
+			RTOS_TMR *temp = hash_table[index].list_ptr;
+			while (temp != NULL){
+				if (temp->RTOSTmrMatch == RTOSTmrTickCtr){
+					temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
+					temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
+					remove_hash_entry(temp);
+					if (timer->RTOSTmrOpt == RTOS_TMR_PERIODIC){
+						INT8U err_val = RTOS_ERR_NONE;
+						RTOSTmrStart(timer, &err_val);
+					}
+				}
+			}
+		}		
 	}
 	return temp;
 }
@@ -256,12 +338,16 @@ RTOS_TMR* alloc_timer_obj(void)
 {
 
 	// Lock the Resources
-	
+	pthread_mutex_lock(&timer_pool_mutex);
 	// Check for Availability of Timers
-
-	// Assign the Timer Object
-
+	if (FreeTmrCount > 0){
+		FreeTmrCount -= 1;
+		// Assign the Timer Object
+		*(FreeTmrListPtr + FreeTmrCount)->RTOSTmrType = RTOS_TMR_TYPE;
+	}
 	// Unlock the Resources
+	pthread_mutex_unlock(&timer_pool_mutex);
+
 }
 
 // Free the allocated timer object and put it back into free pool
