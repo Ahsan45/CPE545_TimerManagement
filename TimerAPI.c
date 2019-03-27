@@ -272,7 +272,7 @@ void *RTOSTmrTask(void *temp)
 					remove_hash_entry(temp);
 					if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
 						INT8U err_val = RTOS_ERR_NONE;
-						RTOSTmrStart(timer, &err_val);
+						RTOSTmrStart(temp, &err_val);
 					}
 				}
 			}
