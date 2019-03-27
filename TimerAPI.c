@@ -130,7 +130,7 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 	// ERROR Checking
 	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
 		*perr = RTOS_ERR_TMR_INVALID_TYPE;
-		return perr;
+		return *perr;
 	}
 	// Based on the Timer State, update the RTOSTmrMatch using RTOSTmrTickCtr, RTOSTmrDelay and RTOSTmrPeriod
 	// You may use the Hash Table to Insert the Running Timer Obj
@@ -144,7 +144,7 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
 	insert_hash_entry(ptmr);
 
-	return perr;
+	return *perr;
 }
 
 // Function to Stop the Timer
@@ -270,7 +270,7 @@ void *RTOSTmrTask(void *temp)
 					temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
 					temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 					remove_hash_entry(temp);
-					if (timer->RTOSTmrOpt == RTOS_TMR_PERIODIC){
+					if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
 						INT8U err_val = RTOS_ERR_NONE;
 						RTOSTmrStart(timer, &err_val);
 					}
@@ -343,7 +343,7 @@ RTOS_TMR* alloc_timer_obj(void)
 	if (FreeTmrCount > 0){
 		FreeTmrCount -= 1;
 		// Assign the Timer Object
-		*(FreeTmrListPtr + FreeTmrCount)->RTOSTmrType = RTOS_TMR_TYPE;
+		(FreeTmrListPtr + FreeTmrCount)->RTOSTmrType = RTOS_TMR_TYPE;
 	}
 	// Unlock the Resources
 	pthread_mutex_unlock(&timer_pool_mutex);
