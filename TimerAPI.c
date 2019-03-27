@@ -151,8 +151,8 @@ INT8U Create_Timer_Pool(INT32U timer_count)
 void init_hash_table(void)
 {
 	for (int i = 0; i < HASH_TABLE_SIZE; i++){
-		hash_table[i]->timer_count = 0;
-		hash_table[i]->list_ptr = NULL;
+		hash_table[i].timer_count = 0;
+		hash_table[i].list_ptr = NULL;
 	}
 }
 
@@ -231,8 +231,8 @@ void RTOSTmrInit(void)
 	}
 	
 	// Initialize Mutex if any
-	retVal = pthread_mutex_init(hash_table_mutex, NULL);
-	retVal = retVal + pthread_mutex_init(timer_pool_mutex, NULL);
+	retVal = pthread_mutex_init(&hash_table_mutex, NULL);
+	retVal = retVal + pthread_mutex_init(&timer_pool_mutex, NULL);
 	if (retVal != RTOS_SUCCESS){
 		fprintf(stdout, "ERROR");
 	}
@@ -242,7 +242,7 @@ void RTOSTmrInit(void)
 	
 	// Create any Thread if required for Timer Task
 	pthread_attr_init(&attr);
-	retVal = pthread_create(&thread, &tattr, RTOSTmrTask, NULL);
+	retVal = pthread_create(&thread, &attr, RTOSTmrTask, NULL);
 	if (retVal != RTOS_SUCCESS){
 		fprintf(stdout, "ERROR");
 	}

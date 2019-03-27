@@ -23,7 +23,7 @@ extern INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr);
 
 extern INT8U RTOSTmrStop(RTOS_TMR *ptmr, INT8U opt, void *callback_arg, INT8U *perr);
 
-extern void RTOSTmrSignal(int signum);
+extern void RTOSTmrSignal(void);
 
 // Internal Functions
 INT8U Create_Timer_Pool(INT32U timer_count);
