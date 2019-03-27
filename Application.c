@@ -107,6 +107,8 @@ int main(void)
 	// Starting Timer
 	// ================================================================
 	// Start Timer1
+	fprintf(stdout, "check im really good");
+
 	RTOSTmrStart(timer_obj1, &err_val);
 	// Check the return value and determine if it started successfully or not
 

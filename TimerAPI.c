@@ -66,20 +66,17 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 	}
 	fprintf(stdout, "check6\n");
 
-	if (callback == NULL){
-		*err = RTOS_ERR_TMR_NO_CALLBACK;
-		return NULL;
-	}
-	fprintf(stdout, "check7");
-
 	// Allocate a New Timer Obj
 	timer_obj = alloc_timer_obj();
+		
+	fprintf(stdout, "check7\n");
 
 	if(timer_obj == NULL) {
 		// Timers are not available
 		*err = RTOS_MALLOC_ERR;
 		return NULL;
 	}
+	fprintf(stdout, "check8\n");
 
 	// Fill up the Timer Object
 	timer_obj->RTOSTmrCallback = callback;
@@ -92,8 +89,11 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 	timer_obj->RTOSTmrName = name;
 	timer_obj->RTOSTmrOpt = option;
 	timer_obj->RTOSTmrState = RTOS_TMR_STATE_STOPPED;
+	
+	fprintf(stdout, "check9\n");
 
 	*err = RTOS_SUCCESS;
+	fprintf(stdout, "check10\n");
 
 	return timer_obj;
 }
