@@ -87,6 +87,7 @@ int main(void)
 	
 	// Create Timer1
 	// Provide the required arguments in the function call
+	fprintf(stdout, "checkplz");
 	timer_obj1 = RTOSTmrCreate(5, 5, RTOS_TMR_PERIODIC, &function1, NULL, timer_name[0], &err_val);
 	fprintf(stdout, "check2");
 
