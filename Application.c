@@ -16,7 +16,7 @@ void print_time(void)
 // Function to Print the Time and Msg in Callback Function
 void print_time_msg(int num)
 {
-
+	fprintf(stdout, "dicks");
 	// Function to print the message for each Timer like
 	// "This is Function 2 and UTC time and date: Thu Oct 27 20:53:27 2016
 }
@@ -111,6 +111,7 @@ int main(void)
 
 	RTOSTmrStart(timer_obj1, &err_val);
 	// Check the return value and determine if it started successfully or not
+	fprintf(stdout, "check im really good");
 
 	// Start Timer2
 	// RTOSTmrStart(timer_obj2, &err_val);
