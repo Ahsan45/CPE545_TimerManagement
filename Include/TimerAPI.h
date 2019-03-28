@@ -34,7 +34,7 @@ void insert_hash_entry(RTOS_TMR *timer_obj);
 
 void remove_hash_entry(RTOS_TMR *timer_obj);
 
-void* RTOSTmrTask(void *temp);
+void* RTOSTmrTask();
 
 RTOS_TMR* alloc_timer_obj(void);
 
