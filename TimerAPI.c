@@ -186,7 +186,7 @@ INT8U Create_Timer_Pool(INT32U timer_count)
 	// Create the Timer pool using Dynamic Memory Allocation
 	// You can imagine of LinkedList Creation for Timer Obj
 	FreeTmrListPtr = (RTOS_TMR*)malloc(timer_count * sizeof(RTOS_TMR*));
-	FreeTmrCount = timer_count;
+	FreeTmrCount = timer_count + 1;
 	return RTOS_SUCCESS;
 }
 
@@ -274,9 +274,11 @@ void *RTOSTmrTask()
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 				remove_hash_entry(temp);
 				if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-					temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
-					temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
-					insert_hash_entry(temp);
+					// temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
+					// temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+					// insert_hash_entry(temp);
+					INT8U err_val = RTOS_ERR_NONE;
+					RTOSTmrStart(temp, &err_val);
 				}
 			}
 			temp = temp->RTOSTmrNext;
