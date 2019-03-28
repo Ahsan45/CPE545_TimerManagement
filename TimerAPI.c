@@ -240,7 +240,7 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 	}
 	else{
 		timer_obj->RTOSTmrPrev->RTOSTmrNext = timer_obj->RTOSTmrNext;
-		timer_obj->RTOSTmrNext->RTOSTmrPrev = timer_obj->RTOSTmrPrev;
+		// timer_obj->RTOSTmrNext->RTOSTmrPrev = timer_obj->RTOSTmrPrev;
 		timer_obj->RTOSTmrNext = NULL;
 		timer_obj->RTOSTmrPrev = NULL;
 	}
