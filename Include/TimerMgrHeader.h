@@ -5,7 +5,7 @@
 #include "TypeDefines.h"
 
 // OS Tick Time in ns
-#define RTOS_CFG_TMR_TASK_RATE	1000000000
+#define RTOS_CFG_TMR_TASK_RATE	100000000
 
 // Lets assume RTOS Timer Type = 20
 #define RTOS_TMR_TYPE	20
