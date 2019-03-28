@@ -140,7 +140,7 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
 	}
 	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_COMPLETED && ptmr->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-		// ptmr->RTOSTmrDelay = ptmr->RTOSTmrPeriod;
+		ptmr->RTOSTmrDelay = ptmr->RTOSTmrPeriod;
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrPeriod;
 	}
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
@@ -274,8 +274,9 @@ void *RTOSTmrTask()
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 				remove_hash_entry(temp);
 				if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-					INT8U err_val = RTOS_ERR_NONE;
-					RTOSTmrStart(temp, &err_val);
+					ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrPeriod;
+					temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+					insert_hash_entry(temp);
 				}
 			}
 			temp = temp->RTOSTmrNext;
