@@ -124,7 +124,7 @@ int main(void)
 
 	// Other Code if needed	
 	while(1){
-		fprinf(stdout, "\n");
+		fprintf(stdout, "\n");
 	}
 
 }
