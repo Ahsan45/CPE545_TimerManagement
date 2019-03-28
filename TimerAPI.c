@@ -263,7 +263,7 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 }
 
 // Timer Task to Manage the Running Timers
-void *RTOSTmrTask(void *temp)
+void *RTOSTmrTask()
 {
 
 	while(1) {
@@ -295,7 +295,6 @@ void *RTOSTmrTask(void *temp)
 			}
 		}		
 	}
-	return temp;
 }
 
 // Timer Initialization Function
