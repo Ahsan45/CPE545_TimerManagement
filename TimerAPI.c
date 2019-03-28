@@ -274,7 +274,7 @@ void *RTOSTmrTask()
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 				remove_hash_entry(temp);
 				if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-					ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrPeriod;
+					temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
 					temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
 					insert_hash_entry(temp);
 				}
