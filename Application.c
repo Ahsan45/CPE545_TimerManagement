@@ -104,7 +104,7 @@ int main(void)
 
 	// Create Timer3
 	// Provide the required arguments in the function call
-	// timer_obj3 = RTOSTmrCreate(10, 0, RTOS_TMR_ONE_SHOT, function3, NULL, timer_name[2], &err_val);
+	timer_obj3 = RTOSTmrCreate(10, 0, RTOS_TMR_ONE_SHOT, function3, NULL, timer_name[2], &err_val);
 	// Check the return value and determine if it created successfully or not
 
 	// ================================================================
@@ -120,7 +120,7 @@ int main(void)
 	// Check the return value and determine if it started successfully or not
 
 	// Start Timer3
-	// RTOSTmrStart(timer_obj3, &err_val);
+	RTOSTmrStart(timer_obj3, &err_val);
 	// Check the return value and determine if it started successfully or not
 	// fprintf(stdout, "CHECKING");
 
