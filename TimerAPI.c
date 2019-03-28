@@ -252,43 +252,36 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 // Timer Task to Manage the Running Timers
 void *RTOSTmrTask()
 {
-	while(1){
-		// Wait for the signal from RTOSTmrSignal()
-		sem_wait(&timer_task_sem);
+	// Wait for the signal from RTOSTmrSignal()
+	sem_wait(&timer_task_sem);
 
-		// Once got the signal, Increment the Timer Tick Counter
-		RTOSTmrTickCtr += 1;
-		// fprintf(stdout, "justworkplz\n");
-		// Check the whole List associated with the index of the Hash Table
-		int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
+	// Once got the signal, Increment the Timer Tick Counter
+	RTOSTmrTickCtr += 1;
+	// fprintf(stdout, "justworkplz\n");
+	// Check the whole List associated with the index of the Hash Table
+	int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
 
-		// Compare each obj of linked list for Timer Completion
-		// If the Timer is completed, Call its Callback Function, Remove the entry from Hash table
-		// If the Timer is Periodic then again insert it in the hash table
-		// Change the State
-		if (hash_table[index].list_ptr != NULL){
-			RTOS_TMR *temp = hash_table[index].list_ptr;
-			while (temp != NULL){
-				RTOS_TMR *next = temp->RTOSTmrNext;
-				if (temp->RTOSTmrMatch == RTOSTmrTickCtr){
-					temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
-					temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
-					remove_hash_entry(temp);
-					if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-						// temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
-						// temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
-						// insert_hash_entry(temp);
-						INT8U err_val = RTOS_ERR_NONE;
-						RTOSTmrStart(temp, &err_val);
-					}
-				}
-				temp = next;
+	// Compare each obj of linked list for Timer Completion
+	// If the Timer is completed, Call its Callback Function, Remove the entry from Hash table
+	// If the Timer is Periodic then again insert it in the hash table
+	// Change the State
+	RTOS_TMR *temp = hash_table[index].list_ptr;
+	while (temp != NULL){
+		RTOS_TMR *next = temp->RTOSTmrNext;
+		if (temp->RTOSTmrMatch == RTOSTmrTickCtr){
+			temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
+			temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
+			remove_hash_entry(temp);
+			if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
+				// temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
+				// temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+				// insert_hash_entry(temp);
+				INT8U err_val = RTOS_ERR_NONE;
+				RTOSTmrStart(temp, &err_val);
 			}
 		}
-		return;
-	}
-
-	
+		temp = next;
+	}	
 }
 
 // Timer Initialization Function
