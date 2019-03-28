@@ -93,7 +93,7 @@ int main(void)
 	
 	// Create Timer1
 	// Provide the required arguments in the function call
-	// timer_obj1 = RTOSTmrCreate(50, 50, RTOS_TMR_PERIODIC, &function1, NULL, timer_name[0], &err_val);
+	timer_obj1 = RTOSTmrCreate(50, 50, RTOS_TMR_PERIODIC, &function1, NULL, timer_name[0], &err_val);
 
 	// Check the return value and determine if it created successfully or not
 	
@@ -112,7 +112,7 @@ int main(void)
 	// ================================================================
 	// Start Timer1
 
-	// RTOSTmrStart(timer_obj1, &err_val);
+	RTOSTmrStart(timer_obj1, &err_val);
 	// Check the return value and determine if it started successfully or not
 
 	// Start Timer2

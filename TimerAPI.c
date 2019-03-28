@@ -186,7 +186,7 @@ INT8U Create_Timer_Pool(INT32U timer_count)
 	// Create the Timer pool using Dynamic Memory Allocation
 	// You can imagine of LinkedList Creation for Timer Obj
 	FreeTmrListPtr = (RTOS_TMR*)malloc(timer_count * sizeof(RTOS_TMR*));
-	FreeTmrCount = timer_count + 1;
+	FreeTmrCount = timer_count;
 	return RTOS_SUCCESS;
 }
 
