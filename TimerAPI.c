@@ -144,7 +144,7 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
 	}
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
-
+	fprintf(stdout, "start");
 	insert_hash_entry(ptmr);
 
 	return *perr;
@@ -172,7 +172,7 @@ void RTOSTmrSignal(void)
 	// Send the Signal to Timer Task using the Semaphore
 	// fprintf(stdout, "signalling?\n");
 
-	// sem_post(&timer_task_sem);
+	sem_post(&timer_task_sem);
 	RTOSTmrTask();
 }
 
@@ -255,7 +255,7 @@ void *RTOSTmrTask()
 {
 
 	// Wait for the signal from RTOSTmrSignal()
-	// sem_wait(&timer_task_sem);
+	sem_wait(&timer_task_sem);
 
 	// Once got the signal, Increment the Timer Tick Counter
 	RTOSTmrTickCtr += 1;
