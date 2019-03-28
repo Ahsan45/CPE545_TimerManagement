@@ -71,13 +71,13 @@ int main(void)
 	// Display the Program Info
 	print_program_info();
 
+	// Initialize the RTOS Timer
+	RTOSTmrInit();
+
 	// Initialize the OS Tick
 	OSTickInitialize();
 
 	fprintf(stdout, "OS Tick Initialization completed successfully");
-
-	// Initialize the RTOS Timer
-	RTOSTmrInit();
 
 	fprintf(stdout, "\nApplication Started....... :-)\n");
 
