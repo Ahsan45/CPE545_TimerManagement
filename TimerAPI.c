@@ -348,7 +348,7 @@ RTOS_TMR* alloc_timer_obj(void)
 	if (FreeTmrCount > 0){
 		FreeTmrCount -= 1;
 		// Assign the Timer Object
-		RTOS_TMR *temp = *(FreeTmrListPtr + FreeTmrCount);
+		RTOS_TMR *temp = (FreeTmrListPtr);
 		temp->RTOSTmrType = RTOS_TMR_TYPE;
 
 		pthread_mutex_unlock(&timer_pool_mutex);
