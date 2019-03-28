@@ -85,7 +85,7 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 	
 
 	*err = RTOS_SUCCESS;
-	fprintf(stdout, "yes\n");
+	
 	return timer_obj;
 }
 
@@ -204,7 +204,7 @@ void insert_hash_entry(RTOS_TMR *timer_obj)
 {
 	// Calculate the index using Hash Function
 	int index = (timer_obj->RTOSTmrDelay + RTOSTmrTickCtr) % HASH_TABLE_SIZE;
-
+	printf("%d",index);
 	// Lock the Resources
 	pthread_mutex_lock(&hash_table_mutex);
 
