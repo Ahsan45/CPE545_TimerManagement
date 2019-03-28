@@ -196,7 +196,6 @@ void init_hash_table(void)
 	for (int i = 0; i < HASH_TABLE_SIZE; i++){
 		hash_table[i].timer_count = 0;
 		hash_table[i].list_ptr = NULL;
-		printf("%d", i);
 	}
 }
 
@@ -237,12 +236,12 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 	// Remove the Timer Obj
 	if (timer_obj->RTOSTmrPrev == NULL){
 		hash_table[index].list_ptr = timer_obj->RTOSTmrNext;
-		timer_obj->RTOSTmrNext == NULL;
+		timer_obj->RTOSTmrNext = NULL;
 	}
 	else{
 		timer_obj->RTOSTmrPrev->RTOSTmrNext = timer_obj->RTOSTmrNext;
-		timer_obj->RTOSTmrNext == NULL;
-		timer_obj->RTOSTmrPrev == NULL;
+		timer_obj->RTOSTmrNext = NULL;
+		timer_obj->RTOSTmrPrev = NULL;
 	}
 
 	// Unlock the Resources
