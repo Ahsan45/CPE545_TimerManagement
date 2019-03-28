@@ -93,9 +93,22 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 INT8U RTOSTmrDel(RTOS_TMR *ptmr, INT8U *perr)
 {
 	// ERROR Checking
+	if (ptmr == NULL){
+		*perr == RTOS_ERR_TMR_INVALID;
+		return perr;
+	}
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return *perr;
+	}
+	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_UNUSED){
+		*perr = RTOS_ERR_TMR_INACTIVE;
+		return perr;
+	}
 
 	// Free Timer Object according to its State
-
+	remove_hash_entry(ptmr);
+	free_timer_obj(ptmr);
 
 	*perr = RTOS_SUCCESS;
 	return RTOS_TRUE;
@@ -105,16 +118,32 @@ INT8U RTOSTmrDel(RTOS_TMR *ptmr, INT8U *perr)
 INT8* RTOSTmrNameGet(RTOS_TMR *ptmr, INT8U *perr)
 {
 	// ERROR Checking
-
+	if (ptmr == NULL){
+		*perr == RTOS_ERR_TMR_INVALID;
+		return perr;
+	}
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return *perr;
+	}
 	// Return the Pointer to the String
+	return ptmr->RTOSTmrName;
 }
 
 // To Get the Number of ticks remaining in time out
 INT32U RTOSTmrRemainGet(RTOS_TMR *ptmr, INT8U *perr)
 {
 	// ERROR Checking
-
+	if (ptmr == NULL){
+		*perr == RTOS_ERR_TMR_INVALID;
+		return perr;
+	}
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return *perr;
+	}
 	// Return the remaining ticks
+	return ptmr->RTOSTmrMatch - RTOSTmrTickCtr;
 
 }
 
@@ -122,8 +151,16 @@ INT32U RTOSTmrRemainGet(RTOS_TMR *ptmr, INT8U *perr)
 INT8U RTOSTmrStateGet(RTOS_TMR *ptmr, INT8U *perr)
 {
 	// ERROR Checking
-
+	if (ptmr == NULL){
+		*perr == RTOS_ERR_TMR_INVALID;
+		return perr;
+	}
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return *perr;
+	}
 	// Return State
+	return ptmr->RTOSTmrState;
 }
 
 // Function to start a Timer
@@ -153,15 +190,34 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 INT8U RTOSTmrStop(RTOS_TMR *ptmr, INT8U opt, void *callback_arg, INT8U *perr)
 {
 	// ERROR Checking
-
+	if (ptmr == NULL){
+		*perr == RTOS_ERR_TMR_INVALID;
+		return perr;
+	}
+	if (ptmr->RTOSTmrType != RTOS_TMR_TYPE){
+		*perr = RTOS_ERR_TMR_INVALID_TYPE;
+		return *perr;
+	}
+	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_UNUSED){
+		*perr = RTOS_ERR_TMR_INACTIVE;
+		return perr;
+	}
 
 	// Remove the Timer from the Hash Table List
-
+	remove_hash_entry(ptmr);
 
 	// Change the State to Stopped
+	ptmr->RTOSTmrState = RTOS_TMR_STATE_STOPPED;
 
 	// Call the Callback function if required
+	if (opt == RTOS_TMR_OPT_CALLBACK){
+		ptmr->RTOSTmrCallback(ptmr->RTOSTmrCallbackArg);
+	}
+	if (opt == RTOS_TMR_OPT_CALLBACK_ARG){
+		ptmr->RTOSTmrCallback(callback_arg);
+	}
 
+	return perr;
 }
 
 // Function called when OS Tick Interrupt Occurs which will signal the RTOSTmrTask() to update the Timers
@@ -186,7 +242,7 @@ INT8U Create_Timer_Pool(INT32U timer_count)
 	// Create the Timer pool using Dynamic Memory Allocation
 	// You can imagine of LinkedList Creation for Timer Obj
 	FreeTmrListPtr = (RTOS_TMR*)malloc(timer_count * sizeof(RTOS_TMR*));
-	FreeTmrCount = timer_count + 1;
+	FreeTmrCount = timer_count;
 	return RTOS_SUCCESS;
 }
 
@@ -372,14 +428,26 @@ RTOS_TMR* alloc_timer_obj(void)
 void free_timer_obj(RTOS_TMR *ptmr)
 {
 	// Lock the Resources
-
+	pthread_mutex_lock(&timer_pool_mutex);
 	// Clear the Timer Fields
-
 	// Change the State
+	ptmr->RTOSTmrType == NULL;
+	ptmr->RTOSTmrCallback = NULL;
+	ptmr->RTOSTmrCallbackArg = NULL;
+	ptmr->RTOSTmrNext = NULL;
+	ptmr->RTOSTmrPrev = NULL;
+	ptmr->RTOSTmrMatch = NULL;
+	ptmr->RTOSTmrDelay = NULL;
+	ptmr->RTOSTmrPeriod = NULL;
+	ptmr->RTOSTmrName = NULL;
+	ptmr->RTOSTmrOpt = NULL;
+	ptmr->RTOSTmrState = RTOS_TMR_STATE_UNUSED;
 
 	// Return the Timer to Free Timer Pool
+	FreeTmrCount += 1;
 
 	// Unlock the Resources
+	pthread_mutex_unlock(&timer_pool_mutex);
 }
 
 // Function to Setup the Timer of Linux which will provide the Clock Tick Interrupt to the Timer Manager Module
