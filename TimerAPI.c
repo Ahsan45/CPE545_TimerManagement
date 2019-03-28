@@ -85,7 +85,7 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 	
 
 	*err = RTOS_SUCCESS;
-
+	fprintf(stdout, "yes\n");
 	return timer_obj;
 }
 
