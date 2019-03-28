@@ -266,7 +266,6 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 void *RTOSTmrTask()
 {
 
-
 	// Wait for the signal from RTOSTmrSignal()
 	sem_wait(&timer_task_sem);
 
@@ -287,6 +286,7 @@ void *RTOSTmrTask()
 				temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 				remove_hash_entry(temp);
+				fprintf(stdout, "waorking?\n");
 				if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
 					INT8U err_val = RTOS_ERR_NONE;
 					RTOSTmrStart(temp, &err_val);
@@ -294,7 +294,6 @@ void *RTOSTmrTask()
 			}
 		}
 	}
-	fprintf(stdout, "waorking?\n");
 	
 }
 
