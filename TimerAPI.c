@@ -204,7 +204,7 @@ void insert_hash_entry(RTOS_TMR *timer_obj)
 {
 	// Calculate the index using Hash Function
 	int index = (timer_obj->RTOSTmrDelay + RTOSTmrTickCtr) % HASH_TABLE_SIZE;
-	printf("%d",index);
+
 	// Lock the Resources
 	pthread_mutex_lock(&hash_table_mutex);
 
