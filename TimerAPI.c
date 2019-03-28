@@ -181,10 +181,10 @@ void RTOSTmrSignal(void)
 {
 	// Received the OS Tick
 	// Send the Signal to Timer Task using the Semaphore
-	fprintf(stdout, "signalling?\n");
+	// fprintf(stdout, "signalling?\n");
 
 	sem_post(&timer_task_sem);
-
+	RTOSTmrTask();
 }
 
 /*****************************************************
