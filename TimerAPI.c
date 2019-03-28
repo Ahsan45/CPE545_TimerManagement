@@ -196,6 +196,7 @@ void init_hash_table(void)
 	for (int i = 0; i < HASH_TABLE_SIZE; i++){
 		hash_table[i].timer_count = 0;
 		hash_table[i].list_ptr = NULL;
+		printf("%d", i);
 	}
 }
 
