@@ -24,7 +24,7 @@ void print_time_msg(int num)
 	fprintf(stdout, "dicks");
 	// Function to print the message for each Timer like
 	// "This is Function 2 and UTC time and date: Thu Oct 27 20:53:27 2016
-	printf("This is Function %s and ", num);
+	printf("This is Function %d and ", num);
 	print_time();
 }
 
