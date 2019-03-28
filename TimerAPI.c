@@ -240,7 +240,7 @@ void remove_hash_entry(RTOS_TMR *timer_obj)
 	}
 	else{
 		timer_obj->RTOSTmrPrev->RTOSTmrNext = timer_obj->RTOSTmrNext;
-		timer_obj->RTOSTmrNext->RTOSTmrPrev = timer_obj->RTOSTmrPrev;
+		// timer_obj->RTOSTmrNext->RTOSTmrPrev = timer_obj->RTOSTmrPrev;
 		timer_obj->RTOSTmrNext = NULL;
 		timer_obj->RTOSTmrPrev = NULL;
 	}
@@ -272,13 +272,20 @@ void *RTOSTmrTask()
 		if (temp->RTOSTmrMatch == RTOSTmrTickCtr){
 			temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
 			temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
-			remove_hash_entry(temp);
+			// remove_hash_entry(temp);
 			if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
 				// temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
 				// temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
 				// insert_hash_entry(temp);
-				INT8U err_val = RTOS_ERR_NONE;
-				RTOSTmrStart(temp, &err_val);
+
+				// INT8U err_val = RTOS_ERR_NONE;
+				// RTOSTmrStart(temp, &err_val);
+
+				temp->RTOSTmrMatch = RTOSTmrTickCtr + temp->RTOSTmrPeriod;
+				temp->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
+			}
+			else{
+				remove_hash_entry(temp);
 			}
 		}
 		temp = next;
