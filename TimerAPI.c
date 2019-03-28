@@ -285,7 +285,7 @@ void *RTOSTmrTask()
 				temp = next;
 			}
 		}
-		// return;
+		return;
 	}
 
 	
