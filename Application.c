@@ -10,7 +10,12 @@
 // Function to Print the Time
 void print_time(void)
 {
+	struct tm *local;
+	time_t t;
 
+	t = time(NULL);
+	local = gmtime(&t);
+	printf("UTC time and date: %s\n", asctime(local));
 }
 
 // Function to Print the Time and Msg in Callback Function
@@ -19,6 +24,8 @@ void print_time_msg(int num)
 	fprintf(stdout, "dicks");
 	// Function to print the message for each Timer like
 	// "This is Function 2 and UTC time and date: Thu Oct 27 20:53:27 2016
+	printf("This is Function %s and ", num);
+	print_time();
 }
 
 void print_program_info(void)
@@ -95,11 +102,11 @@ int main(void)
 	
 	// Create Timer2
 	// Provide the required arguments in the function call
-	// timer_obj2 = RTOSTmrCreate(3, 3, RTOS_TMR_PERIODIC, function2, NULL, timer_name[1], &err_val);
-	// // Check the return value and determine if it created successfully or not
+	timer_obj2 = RTOSTmrCreate(30, 30, RTOS_TMR_PERIODIC, function2, NULL, timer_name[1], &err_val);
+	// Check the return value and determine if it created successfully or not
 
-	// // Create Timer3
-	// // Provide the required arguments in the function call
+	// Create Timer3
+	// Provide the required arguments in the function call
 	// timer_obj3 = RTOSTmrCreate(10, 0, RTOS_TMR_ONE_SHOT, function3, NULL, timer_name[2], &err_val);
 	// Check the return value and determine if it created successfully or not
 
@@ -114,17 +121,17 @@ int main(void)
 	fprintf(stdout, "check im really good\n");
 
 	// Start Timer2
-	// RTOSTmrStart(timer_obj2, &err_val);
-	// // Check the return value and determine if it started successfully or not
+	RTOSTmrStart(timer_obj2, &err_val);
+	// Check the return value and determine if it started successfully or not
 
-	// // Start Timer3
+	// Start Timer3
 	// RTOSTmrStart(timer_obj3, &err_val);
 	// Check the return value and determine if it started successfully or not
 	// fprintf(stdout, "CHECKING");
 
 	// Other Code if needed	
 	while(1){
-		
+
 	}
 
 }
