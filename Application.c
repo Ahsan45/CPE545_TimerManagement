@@ -21,7 +21,6 @@ void print_time(void)
 // Function to Print the Time and Msg in Callback Function
 void print_time_msg(int num)
 {
-	fprintf(stdout, "dicks");
 	// Function to print the message for each Timer like
 	// "This is Function 2 and UTC time and date: Thu Oct 27 20:53:27 2016
 	printf("This is Function %d and ", num);
@@ -82,7 +81,7 @@ int main(void)
 	OSTickInitialize();
 
 	fprintf(stdout, "OS Tick Initialization completed successfully");
-	
+
 	// Initialize the RTOS Timer
 	RTOSTmrInit();
 

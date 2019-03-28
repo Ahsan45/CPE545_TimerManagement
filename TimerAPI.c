@@ -259,7 +259,7 @@ void *RTOSTmrTask()
 
 	// Once got the signal, Increment the Timer Tick Counter
 	RTOSTmrTickCtr += 1;
-	fprintf(stdout, "justworkplz\n");
+	// fprintf(stdout, "justworkplz\n");
 	// Check the whole List associated with the index of the Hash Table
 	int index = RTOSTmrTickCtr % HASH_TABLE_SIZE;
 
