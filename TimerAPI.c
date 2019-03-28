@@ -140,11 +140,10 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
 	}
 	if (ptmr->RTOSTmrState == RTOS_TMR_STATE_COMPLETED && ptmr->RTOSTmrOpt == RTOS_TMR_PERIODIC){
-		ptmr->RTOSTmrDelay = ptmr->RTOSTmrPeriod;
-		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
+		// ptmr->RTOSTmrDelay = ptmr->RTOSTmrPeriod;
+		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrPeriod;
 	}
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
-	fprintf(stdout, "start");
 	insert_hash_entry(ptmr);
 
 	return *perr;
