@@ -78,13 +78,13 @@ int main(void)
 	// Display the Program Info
 	print_program_info();
 
-	// Initialize the RTOS Timer
-	RTOSTmrInit();
-
 	// Initialize the OS Tick
 	OSTickInitialize();
 
 	fprintf(stdout, "OS Tick Initialization completed successfully");
+	
+	// Initialize the RTOS Timer
+	RTOSTmrInit();
 
 	fprintf(stdout, "\nApplication Started....... :-)\n");
 
@@ -94,9 +94,7 @@ int main(void)
 	
 	// Create Timer1
 	// Provide the required arguments in the function call
-	fprintf(stdout, "\ncheckplz\n");
 	timer_obj1 = RTOSTmrCreate(50, 50, RTOS_TMR_PERIODIC, &function1, NULL, timer_name[0], &err_val);
-	fprintf(stdout, "checkidfk\n");
 
 	// Check the return value and determine if it created successfully or not
 	
@@ -114,11 +112,9 @@ int main(void)
 	// Starting Timer
 	// ================================================================
 	// Start Timer1
-	fprintf(stdout, "check im really good\n");
 
 	RTOSTmrStart(timer_obj1, &err_val);
 	// Check the return value and determine if it started successfully or not
-	fprintf(stdout, "check im really good\n");
 
 	// Start Timer2
 	RTOSTmrStart(timer_obj2, &err_val);

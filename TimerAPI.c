@@ -42,41 +42,34 @@ pthread_mutex_t timer_pool_mutex;
 // Function to create a Timer
 RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALLBACK callback, void *callback_arg, INT8	*name, INT8U *err)
 {
-	fprintf(stdout, "check2\n");
 
 	RTOS_TMR *timer_obj = NULL;
-	fprintf(stdout, "check3\n");
 
 	// Check the input Arguments for ERROR
 	if (delay < 1){
 		*err = RTOS_ERR_TMR_INVALID_DLY;
 		return NULL;
 	}
-	fprintf(stdout, "check4\n");
 
 	if (option == RTOS_TMR_PERIODIC && period < 1){
 		*err = RTOS_ERR_TMR_INVALID_PERIOD;
 		return NULL;
 	}
-	fprintf(stdout, "check5\n");
 
 	if (option != RTOS_TMR_PERIODIC && option != RTOS_TMR_ONE_SHOT){
 		*err = RTOS_ERR_TMR_INVALID_OPT;
 		return NULL;
 	}
-	fprintf(stdout, "check6\n");
 
 	// Allocate a New Timer Obj
 	timer_obj = alloc_timer_obj();
 		
-	fprintf(stdout, "check7\n");
 
 	if(timer_obj == NULL) {
 		// Timers are not available
 		*err = RTOS_MALLOC_ERR;
 		return NULL;
 	}
-	fprintf(stdout, "check8\n");
 
 	// Fill up the Timer Object
 	timer_obj->RTOSTmrCallback = callback;
@@ -90,10 +83,8 @@ RTOS_TMR* RTOSTmrCreate(INT32U delay, INT32U period, INT8U option, RTOS_TMR_CALL
 	timer_obj->RTOSTmrOpt = option;
 	timer_obj->RTOSTmrState = RTOS_TMR_STATE_STOPPED;
 	
-	fprintf(stdout, "check9\n");
 
 	*err = RTOS_SUCCESS;
-	fprintf(stdout, "check10\n");
 
 	return timer_obj;
 }
@@ -153,10 +144,8 @@ INT8U RTOSTmrStart(RTOS_TMR *ptmr, INT8U *perr)
 		ptmr->RTOSTmrMatch = RTOSTmrTickCtr + ptmr->RTOSTmrDelay;
 	}
 	ptmr->RTOSTmrState = RTOS_TMR_STATE_RUNNING;
-	fprintf(stdout, "maybe?\n");
 
 	insert_hash_entry(ptmr);
-	fprintf(stdout, "yes?\n");
 
 	return *perr;
 }
@@ -233,7 +222,6 @@ void insert_hash_entry(RTOS_TMR *timer_obj)
 
 	// Unlock the Resources
 	pthread_mutex_unlock(&hash_table_mutex);
-	fprintf(stdout, "no?\n");
 
 }
 
@@ -286,7 +274,6 @@ void *RTOSTmrTask()
 				temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
 				remove_hash_entry(temp);
-				fprintf(stdout, "waorking?\n");
 				if (temp->RTOSTmrOpt == RTOS_TMR_PERIODIC){
 					INT8U err_val = RTOS_ERR_NONE;
 					RTOSTmrStart(temp, &err_val);
