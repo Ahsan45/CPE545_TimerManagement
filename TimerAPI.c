@@ -292,6 +292,7 @@ void *RTOSTmrTask()
 					RTOSTmrStart(temp, &err_val);
 				}
 			}
+			temp = temp->RTOSTmrNext;
 		}
 	}
 	
