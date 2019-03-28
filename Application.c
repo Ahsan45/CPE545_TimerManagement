@@ -123,9 +123,6 @@ int main(void)
 	// fprintf(stdout, "CHECKING");
 
 	// Other Code if needed	
-	while(1){
-		fprintf(stdout, "\n");
-	}
 
 }
 

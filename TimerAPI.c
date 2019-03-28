@@ -293,7 +293,9 @@ void *RTOSTmrTask()
 					}
 				}
 			}
-		}		
+		}
+		fprintf(stdout, "waorking?\n");
+	
 	}
 }
 
