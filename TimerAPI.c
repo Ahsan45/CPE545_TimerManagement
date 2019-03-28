@@ -181,6 +181,8 @@ void RTOSTmrSignal(void)
 {
 	// Received the OS Tick
 	// Send the Signal to Timer Task using the Semaphore
+	fprintf(stdout, "signalling?\n");
+
 	sem_post(&timer_task_sem);
 
 }
@@ -399,7 +401,7 @@ void OSTickInitialize(void) {
 	time_value.it_value.tv_nsec = RTOS_CFG_TMR_TASK_RATE;
 
 	// Change the Action of SIGALRM to call a function RTOSTmrSignal()
-	signal(SIGALRM, &RTOSTmrSignal);
+	signal(SIGALRM, RTOSTmrSignal);
 
 	// Create the Timer Object
 	timer_create(CLOCK_REALTIME, NULL, &timer_id);
