@@ -269,6 +269,7 @@ void *RTOSTmrTask()
 	if (hash_table[index].list_ptr != NULL){
 		RTOS_TMR *temp = hash_table[index].list_ptr;
 		while (temp != NULL){
+			RTOS_TMR *next = temp->RTOSTmrNext;
 			if (temp->RTOSTmrMatch == RTOSTmrTickCtr){
 				temp->RTOSTmrState = RTOS_TMR_STATE_COMPLETED;
 				temp->RTOSTmrCallback(temp->RTOSTmrCallbackArg);
@@ -281,7 +282,7 @@ void *RTOSTmrTask()
 					RTOSTmrStart(temp, &err_val);
 				}
 			}
-			temp = temp->RTOSTmrNext;
+			temp = next;
 		}
 	}
 	
